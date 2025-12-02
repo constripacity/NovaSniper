@@ -60,6 +60,38 @@ uvicorn app.main:app --reload
 ```
 FastAPI will create the SQLite tables on startup and initialize the scheduler to run every `CHECK_INTERVAL_SECONDS`.
 
+## Beginner-friendly Quick Start (Windows, no Git)
+1. **Install Python** from [python.org/downloads](https://www.python.org/downloads/) and check "Add Python to PATH" during setup.
+2. **Download the project ZIP:**
+   - Visit the repository page and click the green **Code** button → **Download ZIP**.
+   - Extract the ZIP to a folder such as `C:\\NovaSniper`.
+3. **Open Command Prompt in the project folder:**
+   - In File Explorer, open the extracted folder.
+   - Click the address bar, type `cmd`, and press Enter.
+4. **Create a virtual environment and activate it:**
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate
+   ```
+5. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+6. **Create your `.env` file:**
+   - Copy `.env.example` (in the project root) to `.env`.
+   - You can keep the default SQLite path; optionally add SMTP and API keys for full functionality.
+7. **Start the app:**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+8. **Open in your browser:**
+   - Dashboard: http://127.0.0.1:8000/
+   - API docs: http://127.0.0.1:8000/docs
+
+### Mac/Linux notes
+- Use `python3 -m venv venv` and `source venv/bin/activate` to create/activate the virtual environment.
+- The rest of the commands are the same (replace `python` with `python3` if needed).
+
 ## Web dashboard
 - Visit `http://localhost:8000/` to open the NovaSniper dashboard.
 - Add products via the form (platform, URL/ID, target price, currency, notify email).
