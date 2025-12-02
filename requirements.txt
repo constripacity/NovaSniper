@@ -7,3 +7,4 @@ apscheduler
 email-validator
 jinja2
 python-multipart
+requests

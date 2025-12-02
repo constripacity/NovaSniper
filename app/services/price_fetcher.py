@@ -18,6 +18,12 @@ import logging
 import re
 from typing import Tuple
 
+import requests
+
+from app.config import get_settings
+
+logger = logging.getLogger(__name__)
+settings = get_settings()
 logger = logging.getLogger(__name__)
 
 
@@ -80,9 +86,68 @@ def get_current_price(platform: str, product_id: str) -> Tuple[float | None, str
 
     logger.info("Fetching price for %s item %s", platform, product_id)
 
+    if platform == "ebay":
+        api_price, api_currency = _fetch_ebay_price(product_id)
+        if api_price is not None:
+            return api_price, api_currency
+
     # Placeholder: deterministic pseudo-price for development/testing only.
     # This should be replaced with real API calls that respect platform ToS.
     seed_value = sum(ord(ch) for ch in product_id + platform)
     simulated_price = round((seed_value % 200) + 10 + (seed_value % 5) * 0.1, 2)
     simulated_currency = "USD"
     return simulated_price, simulated_currency
+
+
+def _fetch_ebay_price(item_id: str) -> Tuple[float | None, str | None]:
+    """Fetch price from the eBay Shopping API when credentials are provided.
+
+    Uses the lightweight `GetSingleItem` endpoint which requires only the
+    application ID (EBAY_APP_ID). If credentials are missing or a network/API
+    error occurs, the function returns `(None, None)` so the caller can fall
+    back to safe placeholder logic.
+    """
+
+    if not settings.ebay_app_id:
+        logger.info("No EBAY_APP_ID provided; skipping live eBay price fetch")
+        return None, None
+
+    params = {
+        "callname": "GetSingleItem",
+        "responseencoding": "JSON",
+        "appid": settings.ebay_app_id,
+        "siteid": "0",
+        "version": "967",
+        "ItemID": item_id,
+        "IncludeSelector": "Details,ItemSpecifics"
+    }
+
+    try:
+        response = requests.get(
+            "https://open.api.ebay.com/shopping",
+            params=params,
+            timeout=10,
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        item = data.get("Item")
+        if not item:
+            logger.warning("eBay response missing Item for %s", item_id)
+            return None, None
+
+        price_info = item.get("ConvertedCurrentPrice") or item.get("CurrentPrice")
+        if not price_info:
+            logger.warning("eBay response missing price data for %s", item_id)
+            return None, None
+
+        price_value = price_info.get("Value")
+        currency = price_info.get("CurrencyID") or "USD"
+        if price_value is None:
+            logger.warning("eBay response price value is None for %s", item_id)
+            return None, None
+
+        return float(price_value), currency
+    except requests.RequestException:
+        logger.exception("Failed to fetch price from eBay for %s", item_id)
+        return None, None
