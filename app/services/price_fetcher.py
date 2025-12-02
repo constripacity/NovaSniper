@@ -24,6 +24,7 @@ from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 def extract_amazon_asin(value: str) -> str | None:
