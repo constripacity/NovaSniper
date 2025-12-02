@@ -8,6 +8,7 @@ A minimal, ToS-friendly price tracking service for Amazon and eBay built with Fa
 - Background scheduler to refresh prices at a configurable interval
 - Email notifications via SMTP when targets are met
 - Clear placeholders for Amazon Product Advertising API and an **eBay Shopping API integration** that works when `EBAY_APP_ID` is set
+- Clear placeholders for Amazon Product Advertising API and eBay API integrations
 
 ## Safety and compliance
 - No CAPTCHA bypassing or anti-bot evasion
@@ -45,6 +46,7 @@ README.md
    ```
 3. Copy `.env.example` to `.env` and fill in your values (database path, scheduler interval, SMTP credentials, and API keys). If you
    provide `EBAY_APP_ID`, live eBay price checks will be used; otherwise a safe placeholder price is generated.
+3. Copy `.env.example` to `.env` and fill in your values (database path, scheduler interval, SMTP credentials, and API keys).
 
 ## Configuration
 Key environment variables:
@@ -53,6 +55,7 @@ Key environment variables:
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `FROM_EMAIL` – SMTP settings for email alerts
 - `AMAZON_ACCESS_KEY`, `AMAZON_SECRET_KEY`, `AMAZON_PARTNER_TAG` – Amazon Product Advertising API
 - `EBAY_APP_ID` – eBay API application key (enables live eBay price fetching via Shopping API)
+- `EBAY_APP_ID` – eBay API application key
 
 ## Running the app
 Start the FastAPI server:
@@ -70,6 +73,13 @@ FastAPI will create the SQLite tables on startup and initialize the scheduler to
 3. **Open Command Prompt inside the project folder:**
    - In File Explorer, open `C:\\NovaSniper`.
    - Click the address bar, type `cmd`, and press **Enter** to open Command Prompt here.
+1. **Install Python** from [python.org/downloads](https://www.python.org/downloads/) and check "Add Python to PATH" during setup.
+2. **Download the project ZIP:**
+   - Visit the repository page and click the green **Code** button → **Download ZIP**.
+   - Extract the ZIP to a folder such as `C:\\NovaSniper`.
+3. **Open Command Prompt in the project folder:**
+   - In File Explorer, open the extracted folder.
+   - Click the address bar, type `cmd`, and press Enter.
 4. **Create a virtual environment and activate it:**
    ```bash
    python -m venv venv
@@ -83,12 +93,17 @@ FastAPI will create the SQLite tables on startup and initialize the scheduler to
    - Copy `.env.example` (in the project root) to `.env`.
    - Keep the default SQLite path if you're unsure.
    - Optionally add SMTP credentials and `EBAY_APP_ID` to enable live email alerts and real eBay price lookups.
+6. **Create your `.env` file:**
+   - Copy `.env.example` (in the project root) to `.env`.
+   - You can keep the default SQLite path; optionally add SMTP and API keys for full functionality.
 7. **Start the app:**
    ```bash
    uvicorn app.main:app --reload
    ```
 8. **Open NovaSniper in your browser:**
    - Dashboard UI: http://127.0.0.1:8000/
+8. **Open in your browser:**
+   - Dashboard: http://127.0.0.1:8000/
    - API docs: http://127.0.0.1:8000/docs
 
 ### Mac/Linux notes
@@ -140,6 +155,15 @@ An APScheduler job runs every `CHECK_INTERVAL_SECONDS` seconds. For each tracked
 To extend pricing:
 - Replace Amazon logic with Product Advertising API calls (SearchItems/GetItems)
 - Swap the placeholder logic for other platforms while respecting each ToS
+1. Fetches the current price using the platform-specific logic (placeholder now; replace with official API calls).
+2. Updates the record with the latest price and timestamp.
+3. Sends an email alert once when the current price is at or below the target.
+
+## Extending price fetching
+`app/services/price_fetcher.py` contains extraction helpers and a placeholder price generator. Replace `get_current_price` with calls to:
+- **Amazon Product Advertising API** (SearchItems/GetItems)
+- **eBay Browse or Finding APIs**
+Make sure to follow platform Terms of Service and keep requests light.
 
 ## Disclaimer
 This project is intended for personal price tracking. It uses (or should use) official APIs and avoids any techniques that bypass website protections or automate purchases.
