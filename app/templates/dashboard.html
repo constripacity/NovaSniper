@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="ns-section">
+    <h2 class="ns-section-title">Add Product to Track</h2>
+    <form id="add-product-form" class="ns-form">
+        <div class="ns-form-row">
+            <label>
+                Platform
+                <select name="platform" required>
+                    <option value="amazon">Amazon</option>
+                    <option value="ebay">eBay</option>
+                </select>
+            </label>
+            <label>
+                Product URL or ID
+                <input type="text" name="product_identifier" placeholder="Paste Amazon/eBay URL or ID" required />
+            </label>
+        </div>
+
+        <div class="ns-form-row">
+            <label>
+                Target Price
+                <input type="number" step="0.01" name="target_price" required />
+            </label>
+            <label>
+                Currency
+                <input type="text" name="currency" value="USD" required />
+            </label>
+        </div>
+
+        <div class="ns-form-row">
+            <label class="ns-form-full">
+                Notify Email
+                <input type="email" name="notify_email" placeholder="you@example.com" required />
+            </label>
+        </div>
+
+        <button type="submit" class="ns-btn ns-btn-primary">Start Tracking</button>
+        <p id="form-message" class="ns-form-message"></p>
+    </form>
+</section>
+
+<section class="ns-section">
+    <h2 class="ns-section-title">Tracked Products</h2>
+    {% if products %}
+    <table class="ns-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Platform</th>
+                <th>Product ID</th>
+                <th>Target Price</th>
+                <th>Current Price</th>
+                <th>Currency</th>
+                <th>Last Checked</th>
+                <th>Alert Sent</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.platform }}</td>
+                <td class="ns-cell-id">{{ p.product_id }}</td>
+                <td>{{ p.target_price }}</td>
+                <td>{{ p.current_price if p.current_price is not none else "-" }}</td>
+                <td>{{ p.currency }}</td>
+                <td>{{ p.last_checked_at if p.last_checked_at else "-" }}</td>
+                <td>{{ "✅" if p.alert_sent else "❌" }}</td>
+                <td>
+                    <button class="ns-btn ns-btn-danger" data-id="{{ p.id }}" data-action="delete">Delete</button>
+                    <button class="ns-btn ns-btn-secondary" data-id="{{ p.id }}" data-action="check">Check Now</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="ns-empty-state">No products are being tracked yet.</p>
+    {% endif %}
+</section>
+
+<script src="/static/dashboard.js"></script>
+{% endblock %}
