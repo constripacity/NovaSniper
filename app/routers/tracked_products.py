@@ -18,6 +18,12 @@ router = APIRouter(prefix="/tracked-products", tags=["tracked-products"])
 logger = logging.getLogger(__name__)
 settings = get_settings()
 notifier = EmailNotifier(settings)
+from app.database import SessionLocal
+from app.schemas import TrackedProductCreate, TrackedProductResponse
+from app.services import price_fetcher
+
+router = APIRouter(prefix="/tracked-products", tags=["tracked-products"])
+logger = logging.getLogger(__name__)
 
 
 def get_db():
