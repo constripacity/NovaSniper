@@ -1,12 +1,23 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app import models
+from app.config import get_settings
+from app.database import SessionLocal
+from app.schemas import TrackedProductCreate, TrackedProductResponse
+from app.services import price_fetcher
+from app.services.notifier import EmailNotifier
+
+router = APIRouter(prefix="/tracked-products", tags=["tracked-products"])
+logger = logging.getLogger(__name__)
+settings = get_settings()
+notifier = EmailNotifier(settings)
 from app.database import SessionLocal
 from app.schemas import TrackedProductCreate, TrackedProductResponse
 from app.services import price_fetcher
@@ -75,3 +86,30 @@ def delete_tracked_product(product_id: int, db: Session = Depends(get_db)):
     db.delete(tracked)
     db.commit()
     return None
+
+
+@router.post("/{product_id}/check-now", response_model=TrackedProductResponse)
+def check_now(product_id: int, db: Session = Depends(get_db)):
+    tracked = db.query(models.TrackedProduct).filter(models.TrackedProduct.id == product_id).first()
+    if not tracked:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tracked product not found")
+
+    price, currency = price_fetcher.get_current_price(tracked.platform, tracked.product_id)
+    tracked.current_price = price
+    tracked.last_checked_at = datetime.utcnow()
+
+    if price is not None and tracked.target_price >= price and not tracked.alert_sent:
+        product_title = f"{tracked.platform.title()} item {tracked.product_id}"
+        notifier.send_price_alert(
+            to_email=tracked.notify_email,
+            product_title=product_title,
+            platform=tracked.platform,
+            current_price=price,
+            currency=currency or tracked.currency,
+            product_url=tracked.product_url,
+        )
+        tracked.alert_sent = True
+
+    db.commit()
+    db.refresh(tracked)
+    return tracked

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="ns-section">
+    <div class="ns-section-header">
+        <div>
+            <p class="ns-eyebrow">Price Tracker</p>
+            <h2 class="ns-title">Add Product to Track</h2>
+            <p class="ns-muted">Track prices on Amazon or eBay. Notifications will be sent when the target price is met.</p>
+        </div>
+    </div>
+    <form id="add-product-form" class="ns-form">
+        <div class="ns-form-grid">
+            <label class="ns-label">
+                <span>Platform</span>
+                <select name="platform" required>
+                    <option value="amazon">Amazon</option>
+                    <option value="ebay">eBay</option>
+                </select>
+            </label>
+
+            <label class="ns-label">
+                <span>Product URL or ID</span>
+                <input type="text" name="product_identifier" placeholder="ASIN or eBay item ID" required />
+            </label>
+
+            <label class="ns-label">
+                <span>Target Price</span>
+                <input type="number" step="0.01" name="target_price" placeholder="99.99" required />
+            </label>
+
+            <label class="ns-label">
+                <span>Currency</span>
+                <input type="text" name="currency" value="USD" required />
+            </label>
+
+            <label class="ns-label">
+                <span>Notify Email</span>
+                <input type="email" name="notify_email" placeholder="you@example.com" required />
+            </label>
+        </div>
+        <div class="ns-form-actions">
+            <button type="submit" class="ns-btn ns-btn-primary">Start Tracking</button>
+            <p id="form-message" class="ns-form-message"></p>
+        </div>
+    </form>
+</section>
+
+<section class="ns-section">
+    <div class="ns-section-header">
+        <div>
+            <p class="ns-eyebrow">Overview</p>
+            <h2 class="ns-title">Tracked Products</h2>
+            <p class="ns-muted">Current tracker status refreshed by the scheduler; use Check Now for a manual refresh.</p>
+        </div>
+    </div>
+    <div class="ns-table-wrapper">
+        <table class="ns-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Platform</th>
+                    <th>Product ID</th>
+                    <th>Target Price</th>
+                    <th>Current Price</th>
+                    <th>Currency</th>
+                    <th>Last Checked</th>
+                    <th>Alert Sent</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>{{ p.id }}</td>
+                    <td class="ns-badge">{{ p.platform }}</td>
+                    <td class="ns-mono">{{ p.product_id }}</td>
+                    <td>{{ "%.2f"|format(p.target_price) }}</td>
+                    <td>{{ "%.2f"|format(p.current_price) if p.current_price is not none else "-" }}</td>
+                    <td>{{ p.currency }}</td>
+                    <td>{{ p.last_checked_at.strftime('%Y-%m-%d %H:%M') if p.last_checked_at else "-" }}</td>
+                    <td>{{ "✅" if p.alert_sent else "❌" }}</td>
+                    <td class="ns-actions">
+                        <button class="ns-btn ns-btn-danger" data-id="{{ p.id }}" data-action="delete">Delete</button>
+                        <button class="ns-btn ns-btn-secondary" data-id="{{ p.id }}" data-action="check">Check Now</button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="ns-empty">No tracked products yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script src="/static/dashboard.js"></script>
+{% endblock %}

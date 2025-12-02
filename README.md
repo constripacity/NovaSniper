@@ -60,6 +60,12 @@ uvicorn app.main:app --reload
 ```
 FastAPI will create the SQLite tables on startup and initialize the scheduler to run every `CHECK_INTERVAL_SECONDS`.
 
+## Web dashboard
+- Visit `http://localhost:8000/` to open the NovaSniper dashboard.
+- Add products via the form (platform, URL/ID, target price, currency, notify email).
+- View existing tracked products in the table, delete entries, or trigger a manual "Check Now" refresh for a single item.
+- The dashboard is a thin layer over the same JSON API, so `/docs` remains available for API exploration.
+
 ## API usage
 ### Add a product to tracking
 ```bash
