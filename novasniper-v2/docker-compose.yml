@@ -1,0 +1,79 @@
+# NovaSniper v2.0 Docker Compose
+version: '3.8'
+
+services:
+  # Main application
+  novasniper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: novasniper
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./data/novasniper.db
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - DEBUG=${DEBUG:-false}
+      - CHECK_INTERVAL_SECONDS=${CHECK_INTERVAL_SECONDS:-3600}
+      # API Keys (set in .env)
+      - AMAZON_ACCESS_KEY=${AMAZON_ACCESS_KEY:-}
+      - AMAZON_SECRET_KEY=${AMAZON_SECRET_KEY:-}
+      - AMAZON_PARTNER_TAG=${AMAZON_PARTNER_TAG:-}
+      - EBAY_APP_ID=${EBAY_APP_ID:-}
+      - WALMART_CLIENT_ID=${WALMART_CLIENT_ID:-}
+      - WALMART_CLIENT_SECRET=${WALMART_CLIENT_SECRET:-}
+      - BESTBUY_API_KEY=${BESTBUY_API_KEY:-}
+      # Email
+      - SMTP_HOST=${SMTP_HOST:-}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASSWORD=${SMTP_PASSWORD:-}
+      - FROM_EMAIL=${FROM_EMAIL:-}
+      # Notifications
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - PUSHOVER_APP_TOKEN=${PUSHOVER_APP_TOKEN:-}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID:-}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
+      - TWILIO_FROM_NUMBER=${TWILIO_FROM_NUMBER:-}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health').raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: PostgreSQL database
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: novasniper-db
+  #   environment:
+  #     POSTGRES_USER: novasniper
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-novasniper}
+  #     POSTGRES_DB: novasniper
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U novasniper"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # Optional: Redis for caching
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: novasniper-redis
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+# volumes:
+#   postgres_data:

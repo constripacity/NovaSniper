@@ -12,6 +12,11 @@ from sqlalchemy.orm import Session
 from app import models
 from app.config import get_settings
 from app.database import Base, SessionLocal, engine
+from fastapi import FastAPI
+
+from app import models
+from app.config import get_settings
+from app.database import Base, engine
 from app.routers import tracked_products
 from app.services.notifier import EmailNotifier
 from app.services.scheduler import PriceCheckScheduler
@@ -51,6 +56,9 @@ def get_db():
 def dashboard(request: Request, db: Session = Depends(get_db)):
     products = db.query(models.TrackedProduct).order_by(models.TrackedProduct.created_at.desc()).all()
     return templates.TemplateResponse("dashboard.html", {"request": request, "products": products})
+
+
+app.include_router(tracked_products.router)
 
 
 @app.get("/health")
