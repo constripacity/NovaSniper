@@ -1,0 +1,222 @@
+:root {
+  --bg: #0f172a;
+  --panel: #111827;
+  --muted: #94a3b8;
+  --text: #e2e8f0;
+  --accent: #6366f1;
+  --accent-strong: #4f46e5;
+  --danger: #ef4444;
+  --border: #1f2937;
+  --success: #22c55e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.ns-header {
+  background: #0b1223;
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+}
+
+.ns-header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ns-logo {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+}
+
+.ns-header-tagline {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.ns-nav {
+  display: flex;
+  gap: 12px;
+}
+
+.ns-nav-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ns-nav-link:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.ns-main {
+  max-width: 960px;
+  margin: 32px auto;
+  padding: 0 16px 48px;
+}
+
+.ns-section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.25);
+}
+
+.ns-section-title {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.ns-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+.ns-form-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ns-form-row label {
+  flex: 1;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ns-form-row .ns-form-full {
+  flex: 1 0 100%;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #2b3350;
+  background: #0c1122;
+  color: #f7f7ff;
+  font-size: 0.9rem;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #4c8dff;
+  box-shadow: 0 0 0 1px #4c8dff44;
+}
+
+.ns-form-message {
+  margin-top: 8px;
+  font-size: 0.85rem;
+}
+
+.ns-form-message.success {
+  color: #7bffb4;
+}
+
+.ns-form-message.error {
+  color: #ff7b9c;
+}
+
+.ns-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.ns-btn:active {
+  transform: translateY(1px);
+}
+
+.ns-btn-primary {
+  background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.35);
+}
+
+.ns-btn-secondary {
+  background: #1f2937;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.ns-btn-danger {
+  background: var(--danger);
+}
+
+.ns-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+}
+
+.ns-table th,
+.ns-table td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.ns-table thead {
+  background: #0b1223;
+  font-size: 14px;
+}
+
+.ns-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ns-cell-id {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ns-empty-state {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 720px) {
+  .ns-actions {
+    flex-direction: column;
+  }
+
+  .ns-header-inner {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
