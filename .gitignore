@@ -1,3 +1,7 @@
+__pycache__/
+*.pyc
+.env
+tracked_products.db
 *.log
 node_modules/
 .env
