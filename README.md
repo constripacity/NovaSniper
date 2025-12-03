@@ -1,34 +1,17 @@
 ```markdown
 # 🎯 NovaSniper v2.0
 
-A production-ready, multi-platform price tracking service with real-time alerts and notifications built with FastAPI, SQLAlchemy, and APScheduler.
+A production-ready, multi-platform price tracking service with real-time alerts and notifications. Built with FastAPI, SQLAlchemy, and APScheduler.
 
-## Features
+---
 
-- Multi-platform support
-  - Amazon — Product Advertising API (PA-API)
-  - eBay — Shopping API
-  - Walmart — Affiliate API
-  - Best Buy — Products API
-  - Target — Redsky API
-  - Extensible architecture for adding more platforms
+## Highlights
 
-- Multi-channel notifications
-  - Email (SMTP with HTML templates)
-  - Discord (webhook embeds)
-  - Telegram (Bot API)
-  - Pushover
-  - SMS (Twilio)
-  - Slack (webhooks)
-  - Custom webhooks (HMAC signing)
-
-- Advanced capabilities
-  - Price history tracking with analytics
-  - Multiple alert thresholds per product
-  - Watchlists and dashboards
-  - User auth (JWT + API keys)
-  - Rate limiting, background scheduler, and admin dashboard
-  - RESTful API with OpenAPI docs
+- Multi-platform price fetching (Amazon, eBay, Walmart, Best Buy, Target)
+- Multi-channel notifications (Email, Discord, Telegram, Pushover, SMS, Slack, Webhooks)
+- Price history, watchlists, alert thresholds, and dashboards
+- RESTful API with OpenAPI docs, JWT & API key auth
+- Extensible fetcher & notifier architecture
 
 ---
 
@@ -40,7 +23,7 @@ A production-ready, multi-platform price tracking service with real-time alerts 
 - pip
 - (optional) Docker & docker-compose
 
-### Local Setup
+### Local (development)
 
 1. Clone the repository:
    ```bash
@@ -60,25 +43,25 @@ A production-ready, multi-platform price tracking service with real-time alerts 
    pip install -r requirements.txt
    ```
 
-4. Copy environment template and edit `.env`:
+4. Copy the environment template and edit `.env`:
    ```bash
    cp .env.example .env
-   # Edit .env and fill in API keys and notification credentials
+   # Edit .env to add API keys and notification credentials
    ```
 
-5. Start the app (development):
+5. Run the development server:
    ```bash
    uvicorn app.main:app --reload
    ```
 
-6. Open in browser:
+6. Open the app:
    - Dashboard: http://localhost:8000/dashboard
    - API docs: http://localhost:8000/docs
    - Health check: http://localhost:8000/health
 
 ### Docker
 
-Build and run with docker-compose:
+Build and run:
 ```bash
 docker-compose up -d --build
 docker-compose logs -f
@@ -88,22 +71,20 @@ docker-compose logs -f
 
 ## Configuration
 
-Edit `.env` with your settings. At minimum provide one platform API key and at least one notification channel.
+Edit `.env` to provide platform API credentials and notification settings. At minimum, add one platform API key and at least one notification channel.
 
-Example environment variables:
+Example `.env` entries
 
 ```env
 # General
 DEBUG=true
 SECRET_KEY=change-me
-
-# Database (example)
 DATABASE_URL=sqlite:///./db.sqlite3
 
 # Amazon (Product Advertising API)
 AMAZON_ACCESS_KEY=your-access-key
 AMAZON_SECRET_KEY=your-secret-key
-AMAZON_PARTNER_TAG=your-tag-20
+AMAZON_PARTNER_TAG=your-partner-tag-20
 
 # eBay
 EBAY_APP_ID=your-app-id
@@ -133,7 +114,7 @@ DISCORD_ENABLED=true
 TELEGRAM_BOT_TOKEN=...
 TELEGRAM_ENABLED=true
 
-# Twilio
+# Twilio (SMS)
 TWILIO_ACCOUNT_SID=...
 TWILIO_AUTH_TOKEN=...
 TWILIO_FROM_NUMBER=+10000000000
@@ -144,8 +125,8 @@ TWILIO_ENABLED=true
 
 ## Scheduler & Price Fetching
 
-- Price fetchers live in `app/services/price_fetcher.py`. Each fetcher extracts product identifiers, calls the upstream API, and normalizes the response into a common `PriceResult`.
-- Scheduler (e.g., APScheduler) in `app/services/scheduler.py` enqueues recurring fetch jobs, persists price history, and triggers notification tasks asynchronously so the API remains responsive.
+- Platform-specific fetchers are implemented under `app/services/price_fetcher.py`. They extract product IDs, call provider APIs, and normalize results into a common `PriceResult`.
+- A scheduler (e.g., APScheduler) in `app/services/scheduler.py` enqueues recurring price checks, persists history, and dispatches notifications asynchronously to avoid blocking the API.
 
 ---
 
@@ -153,14 +134,14 @@ TWILIO_ENABLED=true
 
 ### Authentication
 
-Two methods are supported:
-1. API Key (header): `X-API-Key: your-api-key`
-2. JWT (header): `Authorization: Bearer your-jwt-token`
+Supported methods:
+- API Key: send header `X-API-Key: your-api-key`
+- JWT: send header `Authorization: Bearer <token>`
 
-### Selected endpoints
+### Example endpoints
 
 ```bash
-# Register user
+# Register a user
 POST /api/v1/auth/register
 {
   "email": "user@example.com",
@@ -188,27 +169,18 @@ GET /api/v1/tracked-products
 
 # Get price history
 GET /api/v1/tracked-products/{id}/history
-
-# Create watchlist
-POST /api/v1/watchlists
-{
-  "name": "Holiday Wishlist",
-  "is_public": true
-}
 ```
 
-See full API documentation at `/docs` when running the server.
+Full interactive API docs are available at `/docs` when the server is running.
 
 ---
 
-## Architecture (overview)
-
-Project layout (simplified):
+## Project Structure (overview)
 
 ```
 novasniper/
 ├── app/
-│   ├── main.py            # FastAPI app
+│   ├── main.py
 │   ├── config.py
 │   ├── database.py
 │   ├── models.py
@@ -246,15 +218,15 @@ Database model summary:
 
 ---
 
-## Platform API Setup (high level)
+## Platform API Setup (brief)
 
-- Amazon PA-API: join Amazon Associates and request API access via Amazon's PA-API docs.
-- eBay: create an app on eBay Developers to get an App ID.
-- Walmart: register for Walmart Affiliate Program and request API keys.
-- Best Buy: get API key from Best Buy Developer portal.
-- Target: consult Redsky endpoints and follow their key provisioning.
+- Amazon PA-API: join Amazon Associates and request Product Advertising API access
+- eBay: register an app at eBay Developers to obtain App ID
+- Walmart: register for Walmart Affiliate Program and request API access
+- Best Buy: obtain API key via Best Buy Developer portal
+- Target: consult Redsky endpoints and follow key provisioning steps
 
-Refer to provider docs for exact steps and quotas.
+Refer to provider documentation for full setup and quotas.
 
 ---
 
@@ -277,16 +249,15 @@ pytest tests/test_tracked_products.py -v
 
 ---
 
-## Deployment
+## Deployment / Production Checklist
 
-Production checklist:
 - [ ] Set a strong SECRET_KEY
-- [ ] Use PostgreSQL (or managed DB) instead of SQLite
-- [ ] Configure proper CORS origins
-- [ ] Set up SSL/TLS
+- [ ] Use PostgreSQL or a managed database (avoid SQLite in production)
+- [ ] Configure CORS and secure origins
+- [ ] Use SSL/TLS (HTTPS)
 - [ ] Configure rate limiting
-- [ ] Set up monitoring/logging
-- [ ] Enable Redis caching (optional)
+- [ ] Set up monitoring and centralized logging
+- [ ] Consider Redis for caching / task queues
 - [ ] Run with a process manager (gunicorn/uvicorn workers) behind a reverse proxy
 
 Example production env snippet:
@@ -300,8 +271,8 @@ DATABASE_URL=postgresql://user:pass@host:5432/novasniper
 
 ## Extending
 
-### Add a new platform
-1. Implement a fetcher (e.g., in `app/services/price_fetcher.py`) that inherits from the base fetcher and implements:
+### Add a new platform fetcher
+1. Implement a fetcher class (e.g., in `app/services/price_fetcher.py`) inheriting from the base fetcher and implement:
    - `is_configured(self) -> bool`
    - `extract_product_id(self, url_or_id: str) -> Optional[str]`
    - `async def fetch_price(self, product_id: str) -> PriceResult`
@@ -325,9 +296,9 @@ class NewPlatformFetcher(BasePriceFetcher):
 ```
 
 ### Add a new notification channel
-1. Create a notifier implementing a `send(...)` interface in `app/services/notifier.py`.
-2. Add new entry to `NotificationType` enum.
-3. Register notifier in the Notification service.
+1. Create a notifier class in `app/services/notifier.py` implementing `is_configured()` and `send(...)`.
+2. Add a `NotificationType` enum entry.
+3. Register the notifier in the Notification service.
 
 Example skeleton:
 
@@ -346,11 +317,18 @@ class NewChannelNotifier(BaseNotifier):
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit changes: `git commit -m "Add my feature"`
-4. Push and open a pull request
+2. Create a feature branch:
+   ```bash
+   git checkout -b feature/my-feature
+   ```
+3. Commit and push your changes:
+   ```bash
+   git commit -m "Add feature"
+   git push origin feature/my-feature
+   ```
+4. Open a Pull Request for review
 
-Please follow existing code style and add tests for new functionality.
+Please follow existing style and add tests for new functionality.
 
 ---
 
@@ -362,11 +340,9 @@ MIT License — see the LICENSE file.
 
 ## Support
 
-- Documentation: `/docs` when running the app
-- Issue tracker: https://github.com/constripacity/NovaSniper/issues
+- Documentation (local): `/docs` when running the server
+- Issues: https://github.com/constripacity/NovaSniper/issues
 - Discussions: https://github.com/constripacity/NovaSniper/discussions
-
----
 
 Built with ❤️ using FastAPI, SQLAlchemy, and APScheduler
 ```
