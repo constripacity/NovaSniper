@@ -39,6 +39,30 @@ A production-ready, multi-platform price tracking service with real-time alerts 
 
 ### Steps
 
+1. **Install Python** — Install Python 3.11+ from [python.org](https://www.python.org/downloads/).
+2. **Install Git** — Install Git from [git-scm.com](https://git-scm.com/downloads) (or download the ZIP in step 3).
+3. **Get the code** — Either clone the repo or download the ZIP:
+   ```bash
+   git clone https://github.com/your-username/novasniper.git
+   cd novasniper
+   ```
+4. **Create a virtual environment**
+   ```bash
+   python -m venv venv
+   ```
+5. **Activate the virtual environment**
+   ```bash
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   ```
+6. **Upgrade pip (recommended)**
+   ```bash
+   pip install --upgrade pip
+   ```
+7. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+8. **Copy environment template**
 1. **Clone the repository**
    ```bash
    git clone https://github.com/your-username/novasniper.git
@@ -59,8 +83,15 @@ A production-ready, multi-platform price tracking service with real-time alerts 
    ```
 5. **Run the application**
    ```bash
-   uvicorn app.main:app --reload
+   cp .env.example .env
    ```
+9. **Fill out environment values** — Add your API keys (e.g., Amazon, eBay) and notification secrets in `.env`.
+10. **Start the server**
+    ```bash
+    uvicorn app.main:app --reload
+    ```
+11. **Open the dashboard** — http://localhost:8000/
+12. **Explore the API docs** — http://localhost:8000/docs (health check at `/health`).
 
 Visit:
 - **Dashboard**: http://localhost:8000/dashboard
@@ -75,6 +106,40 @@ docker-compose up -d
 
 # View logs
 docker-compose logs -f
+```
+
+## Configuration
+
+Edit `.env` with your settings.
+
+### Required for Live Prices
+Provide at least one platform API key:
+
+```env
+# Amazon (most common)
+AMAZON_ACCESS_KEY=your-access-key
+AMAZON_SECRET_KEY=your-secret-key
+AMAZON_PARTNER_TAG=your-tag-20
+
+# eBay
+EBAY_APP_ID=your-app-id
+```
+
+### For Notifications
+
+```env
+# Email
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your@gmail.com
+SMTP_PASSWORD=app-password
+FROM_EMAIL=your@gmail.com
+
+# Discord (easiest)
+DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+DISCORD_ENABLED=true
+```
+
 ```
 
 ## Configuration
@@ -209,6 +274,55 @@ User
 └── OutboundWebhook (many)
 ```
 
+```
+
+See full API documentation at `/docs` when running.
+
+## Architecture
+
+```
+novasniper/
+├── app/
+│   ├── main.py              # FastAPI application
+│   ├── config.py            # Configuration settings
+│   ├── database.py          # Database setup
+│   ├── models.py            # SQLAlchemy models
+│   ├── schemas.py           # Pydantic schemas
+│   ├── routers/
+│   │   ├── auth.py          # Authentication endpoints
+│   │   ├── tracked_products.py
+│   │   ├── watchlists.py
+│   │   ├── notifications.py
+│   │   ├── webhooks.py
+│   │   └── admin.py
+│   ├── services/
+│   │   ├── price_fetcher.py # Multi-platform fetchers
+│   │   ├── notifier.py      # Notification channels
+│   │   └── scheduler.py     # Background jobs
+│   ├── static/              # Static assets (dashboard)
+│   ├── templates/           # HTML templates
+│   └── utils/
+│       └── auth.py          # Auth utilities
+├── tests/
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── .env.example
+```
+
+## Database Models
+
+```
+User
+├── TrackedProduct (many)
+│   ├── PriceHistory (many)
+│   └── Alert (many)
+├── Watchlist (many)
+│   └── WatchlistItem (many)
+├── NotificationSetting (many)
+└── OutboundWebhook (many)
+```
+
 ## Platform API Setup
 
 ### Amazon Product Advertising API
@@ -257,6 +371,44 @@ pytest tests/test_tracked_products.py -v
 DEBUG=false
 SECRET_KEY=<generated-with-openssl-rand-hex-32>
 DATABASE_URL=postgresql://user:pass@host:5432/novasniper
+```
+
+## Extending
+
+### Adding a New Platform
+
+1. Create fetcher class in `app/services/price_fetcher.py`:
+
+```python
+class NewPlatformFetcher(BasePriceFetcher):
+    def is_configured(self) -> bool:
+        return bool(settings.NEW_PLATFORM_API_KEY)
+
+    def extract_product_id(self, url_or_id: str) -> Optional[str]:
+        # Extract ID from URL
+        pass
+
+    async def fetch_price(self, product_id: str) -> PriceResult:
+        # Fetch from API
+        pass
+```
+
+2. Add to `Platform` enum in `models.py`
+3. Register in `PriceFetcherService`
+
+### Adding a New Notification Channel
+
+1. Create notifier class in `app/services/notifier.py`:
+
+```python
+class NewChannelNotifier(BaseNotifier):
+    def is_configured(self) -> bool:
+        pass
+
+    async def send(self, recipient, subject, message, product=None) -> NotificationResult:
+        pass
+```
+
 ```
 
 ## Extending
