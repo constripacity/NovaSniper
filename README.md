@@ -15,10 +15,10 @@ A production-ready, multi-platform price tracking service with real-time alerts 
 
 ---
 
+```markdown
 ## Quick Start
 
 ### Prerequisites
-
 - Python 3.11+
 - pip
 - (optional) Docker & docker-compose
@@ -32,10 +32,24 @@ A production-ready, multi-platform price tracking service with real-time alerts 
    ```
 
 2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   ```
+
+   - macOS / Linux:
+     ```bash
+     python -m venv venv
+     source venv/bin/activate
+     ```
+
+   - Windows (PowerShell):
+     ```powershell
+     python -m venv venv
+     .\venv\Scripts\Activate.ps1
+     ```
+
+   - Windows (Command Prompt):
+     ```cmd
+     python -m venv venv
+     .\venv\Scripts\activate
+     ```
 
 3. Upgrade pip and install dependencies:
    ```bash
@@ -45,19 +59,26 @@ A production-ready, multi-platform price tracking service with real-time alerts 
 
 4. Copy the environment template and edit `.env`:
    ```bash
+   # macOS / Linux
    cp .env.example .env
-   # Edit .env to add API keys and notification credentials
+
+   # Windows (Command Prompt)
+   copy .env.example .env
+
+   # Windows (PowerShell)
+   Copy-Item .env.example .env
    ```
+   Then open `.env` and fill in your API keys and notification credentials.
 
 5. Run the development server:
    ```bash
    uvicorn app.main:app --reload
    ```
 
-6. Open the app:
-   - Dashboard: http://localhost:8000/dashboard
-   - API docs: http://localhost:8000/docs
-   - Health check: http://localhost:8000/health
+6. Open the app in your browser:
+- Dashboard: http://localhost:8000/dashboard
+- API docs: http://localhost:8000/docs
+- Health check: http://localhost:8000/health
 
 ### Docker
 
@@ -67,6 +88,10 @@ docker-compose up -d --build
 docker-compose logs -f
 ```
 
+Notes:
+- If you're working from a fork, clone your fork URL instead of the main repo URL.
+- On Windows, use PowerShell or WSL for the cleanest experience with the shown commands.
+```
 ---
 
 ## Configuration
