@@ -1,174 +1,106 @@
+```markdown
 # 🎯 NovaSniper v2.0
 
-A production-ready, multi-platform price tracking service with real-time alerts and notifications.
+A production-ready, multi-platform price tracking service with real-time alerts and notifications built with FastAPI, SQLAlchemy, and APScheduler.
 
 ## Features
 
-### 🛒 Multi-Platform Support
-- **Amazon** — Product Advertising API v5.0
-- **eBay** — Shopping API
-- **Walmart** — Affiliate API
-- **Best Buy** — Products API
-- **Target** — Redsky API
-- Extensible architecture for adding more platforms
+- Multi-platform support
+  - Amazon — Product Advertising API (PA-API)
+  - eBay — Shopping API
+  - Walmart — Affiliate API
+  - Best Buy — Products API
+  - Target — Redsky API
+  - Extensible architecture for adding more platforms
 
-### 🔔 Multi-Channel Notifications
-- **Email** — SMTP with HTML templates
-- **Discord** — Webhook embeds
-- **Telegram** — Bot API
-- **Pushover** — Push notifications
-- **SMS** — Twilio integration
-- **Slack** — Webhook blocks
-- **Webhooks** — Custom integrations with HMAC signing
+- Multi-channel notifications
+  - Email (SMTP with HTML templates)
+  - Discord (webhook embeds)
+  - Telegram (Bot API)
+  - Pushover
+  - SMS (Twilio)
+  - Slack (webhooks)
+  - Custom webhooks (HMAC signing)
 
-### 📊 Advanced Features
-- Price history tracking with analytics
-- Multiple alert thresholds per product
-- Watchlists for organizing products
-- User authentication (JWT + API keys)
-- Rate limiting
-- Admin dashboard
-- RESTful API with OpenAPI docs
-- Background scheduler for recurring price checks
+- Advanced capabilities
+  - Price history tracking with analytics
+  - Multiple alert thresholds per product
+  - Watchlists and dashboards
+  - User auth (JWT + API keys)
+  - Rate limiting, background scheduler, and admin dashboard
+  - RESTful API with OpenAPI docs
 
-## Quick Start
-
-### Prerequisites
-- Python 3.11+
-- pip
-
-### Steps
-1. **Install Python** — Download Python 3.11+ from [python.org](https://www.python.org/downloads/).
-2. **Install Git** — Install Git from [git-scm.com](https://git-scm.com/downloads) or continue with a ZIP download.
-3. **Get the code** — Clone or download:
-
-### 🛒 Multi-Platform Support
-- **Amazon** — Product Advertising API v5.0
-- **eBay** — Shopping API
-- **Walmart** — Affiliate API
-- **Best Buy** — Products API
-- **Target** — Redsky API
-- Extensible architecture for adding more platforms
-
-### 🔔 Multi-Channel Notifications
-- **Email** — SMTP with HTML templates
-- **Discord** — Webhook embeds
-- **Telegram** — Bot API
-- **Pushover** — Push notifications
-- **SMS** — Twilio integration
-- **Slack** — Webhook blocks
-- **Webhooks** — Custom integrations with HMAC signing
-
-### 📊 Advanced Features
-- Price history tracking with analytics
-- Multiple alert thresholds per product
-- Watchlists for organizing products
-- User authentication (JWT + API keys)
-- Rate limiting
-- Admin dashboard
-- RESTful API with OpenAPI docs
-- Background scheduler for recurring price checks
+---
 
 ## Quick Start
 
 ### Prerequisites
+
 - Python 3.11+
 - pip
+- (optional) Docker & docker-compose
 
-### Steps
+### Local Setup
 
-1. **Install Python** — Install Python 3.11+ from [python.org](https://www.python.org/downloads/).
-2. **Install Git** — Install Git from [git-scm.com](https://git-scm.com/downloads) (or download the ZIP in step 3).
-3. **Get the code** — Either clone the repo or download the ZIP:
+1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/novasniper.git
-   cd novasniper
+   git clone https://github.com/constripacity/NovaSniper.git
+   cd NovaSniper
    ```
-4. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   ```
-5. **Activate the virtual environment**
-   ```bash
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   ```
-6. **Upgrade pip (recommended)**
-   ```bash
-   pip install --upgrade pip
-   ```
-7. **Install dependencies**
-   ```bash
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   ```
-6. **Upgrade pip (recommended)**
-   ```bash
-   pip install --upgrade pip
-   ```
-7. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-8. **Copy environment template**
-   ```bash
-   cp .env.example .env
-   ```
-9. **Fill out environment values** — Add your API keys (Amazon, eBay, Walmart, Best Buy, Target) and notification secrets in `.env`.
-8. **Copy environment template**
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/novasniper.git
-   cd novasniper
-   ```
-2. **Create and activate a virtual environment**
+
+2. Create and activate a virtual environment:
    ```bash
    python -m venv venv
    source venv/bin/activate  # Windows: venv\Scripts\activate
    ```
-3. **Install dependencies**
+
+3. Upgrade pip and install dependencies:
    ```bash
+   pip install --upgrade pip
    pip install -r requirements.txt
    ```
-4. **Copy the environment template**
-   ```bash
-   cp .env.example .env
-   ```
-5. **Run the application**
-   ```bash
-   cp .env.example .env
-   ```
-9. **Fill out environment values** — Add your API keys (e.g., Amazon, eBay) and notification secrets in `.env`.
-10. **Start the server**
-    ```bash
-    uvicorn app.main:app --reload
-    ```
-11. **Open the dashboard** — http://localhost:8000/
-12. **Explore the API docs** — http://localhost:8000/docs (health check at `/health`).
 
-Visit:
-- **Dashboard**: http://localhost:8000/dashboard
-- **API Docs**: http://localhost:8000/docs
-- **Health Check**: http://localhost:8000/health
+4. Copy environment template and edit `.env`:
+   ```bash
+   cp .env.example .env
+   # Edit .env and fill in API keys and notification credentials
+   ```
+
+5. Start the app (development):
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+6. Open in browser:
+   - Dashboard: http://localhost:8000/dashboard
+   - API docs: http://localhost:8000/docs
+   - Health check: http://localhost:8000/health
 
 ### Docker
 
+Build and run with docker-compose:
 ```bash
-# Build and run
-docker-compose up -d
-
-# View logs
+docker-compose up -d --build
 docker-compose logs -f
 ```
 
+---
+
 ## Configuration
 
-Edit `.env` with your settings. At minimum provide one platform API key and a notification channel if you want alerts.
-Edit `.env` with your settings.
+Edit `.env` with your settings. At minimum provide one platform API key and at least one notification channel.
 
-### Required for Live Prices
-Provide at least one platform API key:
+Example environment variables:
 
 ```env
-# Amazon (most common)
+# General
+DEBUG=true
+SECRET_KEY=change-me
+
+# Database (example)
+DATABASE_URL=sqlite:///./db.sqlite3
+
+# Amazon (Product Advertising API)
 AMAZON_ACCESS_KEY=your-access-key
 AMAZON_SECRET_KEY=your-secret-key
 AMAZON_PARTNER_TAG=your-tag-20
@@ -185,12 +117,8 @@ BESTBUY_API_KEY=your-api-key
 
 # Target
 TARGET_API_KEY=your-api-key
-```
 
-### For Notifications
-
-```env
-# Email
+# Email (SMTP)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your@gmail.com
@@ -205,73 +133,31 @@ DISCORD_ENABLED=true
 TELEGRAM_BOT_TOKEN=...
 TELEGRAM_ENABLED=true
 
-# Pushover
-PUSHOVER_APP_TOKEN=...
-PUSHOVER_ENABLED=true
-
-# Twilio SMS
+# Twilio
 TWILIO_ACCOUNT_SID=...
 TWILIO_AUTH_TOKEN=...
 TWILIO_FROM_NUMBER=+10000000000
 TWILIO_ENABLED=true
-
-# Slack
-SLACK_WEBHOOK_URL=...
-SLACK_ENABLED=true
-# Discord (easiest)
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
-DISCORD_ENABLED=true
 ```
 
-```
-
-## Configuration
-
-Edit `.env` with your settings.
-
-### Required for Live Prices
-Provide at least one platform API key:
-
-```env
-# Amazon (most common)
-AMAZON_ACCESS_KEY=your-access-key
-AMAZON_SECRET_KEY=your-secret-key
-AMAZON_PARTNER_TAG=your-tag-20
-
-# eBay
-EBAY_APP_ID=your-app-id
-```
-
-### For Notifications
-
-```env
-# Email
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your@gmail.com
-SMTP_PASSWORD=app-password
-FROM_EMAIL=your@gmail.com
-
-# Discord (easiest)
-DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
-DISCORD_ENABLED=true
-```
+---
 
 ## Scheduler & Price Fetching
 
-- **Price fetching**: Each platform-specific fetcher in `app/services/price_fetcher.py` extracts product IDs, calls the upstream API, and normalizes prices into a unified `PriceResult`.
-- **Scheduler**: APScheduler jobs in `app/services/scheduler.py` periodically trigger fetchers, persist price history, and enqueue notification tasks so alerts are delivered without blocking API requests.
+- Price fetchers live in `app/services/price_fetcher.py`. Each fetcher extracts product identifiers, calls the upstream API, and normalizes the response into a common `PriceResult`.
+- Scheduler (e.g., APScheduler) in `app/services/scheduler.py` enqueues recurring fetch jobs, persists price history, and triggers notification tasks asynchronously so the API remains responsive.
+
+---
 
 ## API Usage
 
 ### Authentication
-Two methods are available:
 
-Two methods available:
-1. **API Key** (header): `X-API-Key: your-api-key`
-2. **JWT Token** (header): `Authorization: Bearer your-token`
+Two methods are supported:
+1. API Key (header): `X-API-Key: your-api-key`
+2. JWT (header): `Authorization: Bearer your-jwt-token`
 
-### Endpoints
+### Selected endpoints
 
 ```bash
 # Register user
@@ -297,7 +183,7 @@ POST /api/v1/tracked-products
   "notify_email": "user@example.com"
 }
 
-# List products
+# List tracked products
 GET /api/v1/tracked-products
 
 # Get price history
@@ -311,143 +197,35 @@ POST /api/v1/watchlists
 }
 ```
 
-See full API documentation at `/docs` when running.
+See full API documentation at `/docs` when running the server.
 
-## Architecture
+---
+
+## Architecture (overview)
+
+Project layout (simplified):
 
 ```
-app/
-├── main.py
-├── config.py
-├── database.py
-├── models.py
-├── schemas.py
-├── routers/
-│   ├── auth.py
-│   ├── tracked_products.py
-│   ├── watchlists.py
-│   ├── notifications.py
-│   ├── webhooks.py
-│   └── admin.py
-├── services/
-│   ├── price_fetcher.py
-│   ├── notifier.py
-│   └── scheduler.py
-├── utils/
-│   └── auth.py
-├── templates/
-│   ├── base.html
-│   └── dashboard.html
-└── static/
-```
-
-## Database Models
-
 novasniper/
 ├── app/
-│   ├── main.py              # FastAPI application
-│   ├── config.py            # Configuration settings
-│   ├── database.py          # Database setup
-│   ├── models.py            # SQLAlchemy models
-│   ├── schemas.py           # Pydantic schemas
+│   ├── main.py            # FastAPI app
+│   ├── config.py
+│   ├── database.py
+│   ├── models.py
+│   ├── schemas.py
 │   ├── routers/
-│   │   ├── auth.py          # Authentication endpoints
+│   │   ├── auth.py
 │   │   ├── tracked_products.py
 │   │   ├── watchlists.py
 │   │   ├── notifications.py
 │   │   ├── webhooks.py
 │   │   └── admin.py
 │   ├── services/
-│   │   ├── price_fetcher.py # Multi-platform fetchers
-│   │   ├── notifier.py      # Notification channels
-│   │   └── scheduler.py     # Background jobs
-│   ├── static/              # Static assets (dashboard)
-│   ├── templates/           # HTML templates
-│   └── utils/
-│       └── auth.py          # Auth utilities
-├── tests/
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-└── .env.example
-```
-User
-├── TrackedProduct (many)
-│   ├── PriceHistory (many)
-│   └── Alert (many)
-├── Watchlist (many)
-│   └── WatchlistItem (many)
-├── NotificationSetting (many)
-└── OutboundWebhook (many)
-```
-
-## Platform API Setup
-
-### Amazon Product Advertising API
-1. Join [Amazon Associates](https://affiliate-program.amazon.com/)
-2. Request [Product Advertising API](https://webservices.amazon.com/paapi5/documentation/) access
-3. Generate access keys in your Associates account
-
-### eBay Shopping API
-1. Create account at [eBay Developers](https://developer.ebay.com/)
-2. Create an application to get App ID
-
-### Walmart Affiliate API
-1. Join [Walmart Affiliate Program](https://affiliates.walmart.com/)
-2. Request API access at [Walmart Developer](https://developer.walmart.com/)
-
-### Best Buy Products API
-1. Register at [Best Buy Developer](https://developer.bestbuy.com/)
-2. Get API key (free tier available)
-
-### Target API
-1. Review the Redsky endpoints
-2. Generate an API key as required for your use case
-
-## Running Tests
-
-## Database Models
-
-```
-User
-├── TrackedProduct (many)
-│   ├── PriceHistory (many)
-│   └── Alert (many)
-├── Watchlist (many)
-│   └── WatchlistItem (many)
-├── NotificationSetting (many)
-└── OutboundWebhook (many)
-```
-
-```
-
-See full API documentation at `/docs` when running.
-
-## Architecture
-
-```
-novasniper/
-├── app/
-│   ├── main.py              # FastAPI application
-│   ├── config.py            # Configuration settings
-│   ├── database.py          # Database setup
-│   ├── models.py            # SQLAlchemy models
-│   ├── schemas.py           # Pydantic schemas
-│   ├── routers/
-│   │   ├── auth.py          # Authentication endpoints
-│   │   ├── tracked_products.py
-│   │   ├── watchlists.py
-│   │   ├── notifications.py
-│   │   ├── webhooks.py
-│   │   └── admin.py
-│   ├── services/
-│   │   ├── price_fetcher.py # Multi-platform fetchers
-│   │   ├── notifier.py      # Notification channels
-│   │   └── scheduler.py     # Background jobs
-│   ├── static/              # Static assets (dashboard)
-│   ├── templates/           # HTML templates
-│   └── utils/
-│       └── auth.py          # Auth utilities
+│   │   ├── price_fetcher.py
+│   │   ├── notifier.py
+│   │   └── scheduler.py
+│   ├── templates/
+│   └── static/
 ├── tests/
 ├── Dockerfile
 ├── docker-compose.yml
@@ -455,75 +233,82 @@ novasniper/
 └── .env.example
 ```
 
-## Database Models
+Database model summary:
 
-```
-User
-├── TrackedProduct (many)
-│   ├── PriceHistory (many)
-│   └── Alert (many)
-├── Watchlist (many)
-│   └── WatchlistItem (many)
-├── NotificationSetting (many)
-└── OutboundWebhook (many)
-```
+- User
+  - TrackedProduct (many)
+    - PriceHistory (many)
+    - Alert (many)
+  - Watchlist (many)
+    - WatchlistItem (many)
+  - NotificationSetting (many)
+  - OutboundWebhook (many)
 
-## Platform API Setup
+---
 
-### Amazon Product Advertising API
-1. Join [Amazon Associates](https://affiliate-program.amazon.com/)
-2. Request [Product Advertising API](https://webservices.amazon.com/paapi5/documentation/) access
-3. Generate access keys in your Associates account
+## Platform API Setup (high level)
 
-### eBay Shopping API
-1. Create account at [eBay Developers](https://developer.ebay.com/)
-2. Create an application to get App ID
+- Amazon PA-API: join Amazon Associates and request API access via Amazon's PA-API docs.
+- eBay: create an app on eBay Developers to get an App ID.
+- Walmart: register for Walmart Affiliate Program and request API keys.
+- Best Buy: get API key from Best Buy Developer portal.
+- Target: consult Redsky endpoints and follow their key provisioning.
 
-### Walmart Affiliate API
-1. Join [Walmart Affiliate Program](https://affiliates.walmart.com/)
-2. Request API access at [Walmart Developer](https://developer.walmart.com/)
+Refer to provider docs for exact steps and quotas.
 
-### Best Buy Products API
-1. Register at [Best Buy Developer](https://developer.bestbuy.com/)
-2. Get API key (free tier available)
+---
 
 ## Running Tests
 
+Run all tests:
 ```bash
-# Run all tests
 pytest
+```
 
-# With coverage
+With coverage:
+```bash
 pytest --cov=app --cov-report=html
+```
 
-# Run specific test file
+Run a single test file:
+```bash
 pytest tests/test_tracked_products.py -v
 ```
 
+---
+
 ## Deployment
 
-### Production Checklist
-- [ ] Set strong `SECRET_KEY`
-- [ ] Use PostgreSQL instead of SQLite
+Production checklist:
+- [ ] Set a strong SECRET_KEY
+- [ ] Use PostgreSQL (or managed DB) instead of SQLite
 - [ ] Configure proper CORS origins
 - [ ] Set up SSL/TLS
-- [ ] Configure rate limits
+- [ ] Configure rate limiting
 - [ ] Set up monitoring/logging
 - [ ] Enable Redis caching (optional)
+- [ ] Run with a process manager (gunicorn/uvicorn workers) behind a reverse proxy
 
-### Environment Variables
+Example production env snippet:
 ```env
 DEBUG=false
-SECRET_KEY=<generated-with-openssl-rand-hex-32>
+SECRET_KEY=<generated-secret>
 DATABASE_URL=postgresql://user:pass@host:5432/novasniper
 ```
 
+---
+
 ## Extending
 
-### Adding a New Platform
+### Add a new platform
+1. Implement a fetcher (e.g., in `app/services/price_fetcher.py`) that inherits from the base fetcher and implements:
+   - `is_configured(self) -> bool`
+   - `extract_product_id(self, url_or_id: str) -> Optional[str]`
+   - `async def fetch_price(self, product_id: str) -> PriceResult`
+2. Add the platform to the `Platform` enum in `models.py`.
+3. Register the fetcher in the PriceFetcher service.
 
-1. Create a fetcher class in `app/services/price_fetcher.py`:
-1. Create fetcher class in `app/services/price_fetcher.py`:
+Example skeleton:
 
 ```python
 class NewPlatformFetcher(BasePriceFetcher):
@@ -531,97 +316,57 @@ class NewPlatformFetcher(BasePriceFetcher):
         return bool(settings.NEW_PLATFORM_API_KEY)
 
     def extract_product_id(self, url_or_id: str) -> Optional[str]:
-        # Extract ID from URL
+        # parse URL or id
         pass
 
     async def fetch_price(self, product_id: str) -> PriceResult:
-        # Fetch from API
+        # call API and normalize response
         pass
 ```
 
-2. Add to `Platform` enum in `models.py`.
-3. Register in `PriceFetcherService`.
+### Add a new notification channel
+1. Create a notifier implementing a `send(...)` interface in `app/services/notifier.py`.
+2. Add new entry to `NotificationType` enum.
+3. Register notifier in the Notification service.
 
-### Adding a New Notification Channel
-
-1. Create a notifier class in `app/services/notifier.py`:
-2. Add to `Platform` enum in `models.py`
-3. Register in `PriceFetcherService`
-
-### Adding a New Notification Channel
-
-1. Create notifier class in `app/services/notifier.py`:
+Example skeleton:
 
 ```python
 class NewChannelNotifier(BaseNotifier):
     def is_configured(self) -> bool:
-        pass
+        return bool(settings.NEW_CHANNEL_API_KEY)
 
     async def send(self, recipient, subject, message, product=None) -> NotificationResult:
+        # send notification
         pass
 ```
 
-2. Add to `NotificationType` enum.
-3. Register in `NotificationService`.
-```
-
-## Extending
-
-### Adding a New Platform
-
-1. Create fetcher class in `app/services/price_fetcher.py`:
-
-```python
-class NewPlatformFetcher(BasePriceFetcher):
-    def is_configured(self) -> bool:
-        return bool(settings.NEW_PLATFORM_API_KEY)
-
-    def extract_product_id(self, url_or_id: str) -> Optional[str]:
-        # Extract ID from URL
-        pass
-
-    async def fetch_price(self, product_id: str) -> PriceResult:
-        # Fetch from API
-        pass
-```
-
-2. Add to `Platform` enum in `models.py`
-3. Register in `PriceFetcherService`
-
-### Adding a New Notification Channel
-
-1. Create notifier class in `app/services/notifier.py`:
-
-```python
-class NewChannelNotifier(BaseNotifier):
-    def is_configured(self) -> bool:
-        pass
-
-    async def send(self, recipient, subject, message, product=None) -> NotificationResult:
-        pass
-```
-
-2. Add to `NotificationType` enum
-3. Register in `NotificationService`
+---
 
 ## Contributing
 
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+2. Create a feature branch: `git checkout -b feature/my-feature`
+3. Commit changes: `git commit -m "Add my feature"`
+4. Push and open a pull request
+
+Please follow existing code style and add tests for new functionality.
+
+---
 
 ## License
 
-MIT License - see LICENSE file
+MIT License — see the LICENSE file.
+
+---
 
 ## Support
 
-- 📖 [Documentation](/docs)
-- 🐛 [Issue Tracker](https://github.com/your-username/novasniper/issues)
-- 💬 [Discussions](https://github.com/your-username/novasniper/discussions)
+- Documentation: `/docs` when running the app
+- Issue tracker: https://github.com/constripacity/NovaSniper/issues
+- Discussions: https://github.com/constripacity/NovaSniper/discussions
 
 ---
 
 Built with ❤️ using FastAPI, SQLAlchemy, and APScheduler
+```
